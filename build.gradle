@@ -1,31 +1,111 @@
-buildscript {
+/*buildscript {
 	ext {
-		springBootVersion = '2.1.1.RELEASE'
+		springBootVersion = '2.0.0.RELEASE'
 	}
 	repositories {
 		mavenCentral()
+		maven { url "http://repo.spring.io/plugins-release" }
+		maven { url "https://plugins.gradle.org/m2/" }
+	}
+
+	dependencies {
+		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.6'
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "com.sarhanm:gradle-versioner:2.3.14"
+		classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.21"
+	}
+}*/
+
+buildscript {
+	repositories {
+		maven { url "http://repo.spring.io/plugins-release" }
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.6'
 	}
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+plugins {
+	id "org.springframework.boot" version "2.0.0.RELEASE"
+	id "com.sarhanm.version-resolver" version "2.4.0"
+	id "com.gorylenko.gradle-git-properties" version "1.4.21"
+}
 
-group = 'com.smart.library'
-version = '0.0.1-SNAPSHOT'
+defaultTasks 'clean', 'jar'
+
+apply plugin: 'maven'
+
+apply plugin: 'java-library'
+apply plugin: 'propdeps'
+apply plugin: 'com.gorylenko.gradle-git-properties'
+apply plugin: 'io.spring.dependency-management'
+//    apply plugin: "com.sarhanm.versioner"
+
+repositories {
+	//maven { url "http://nexus.inhand.local/repository/maven-public/" }
+	//maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+	jcenter()
+	maven { url "http://repo.spring.io/milestone" }
+}
+
+
+
+
+project.group = 'com.smart.library'
+project.version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+
+compileJava {
+	options.encoding = 'UTF-8'
+}
 
 repositories {
 	mavenCentral()
 }
 
 
+springBoot {
+	buildInfo()
+}
+
+bootJar {
+	manifest {
+		attributes 'Implementation-Version': project.version
+		attributes 'Implementation-Title': project.name
+	}
+}
+
 dependencies {
+	implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.1.1.RELEASE'
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.springframework.boot:spring-boot-starter-web')
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	implementation "org.projectlombok:lombok:1.16.+"
+	implementation "org.springframework.boot:spring-boot-starter"
+	implementation "org.springframework.boot:spring-boot-starter-actuator"
+	implementation "org.springframework.boot:spring-boot-starter-aop"
+	implementation "org.springframework.boot:spring-boot-starter-amqp"
+	implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
+	implementation "org.springframework.boot:spring-boot-starter-webflux"
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+	implementation 'com.google.guava:guava:20.0'
+
+
+	api('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE')
+	api 'org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:0.+'
+	api 'org.apache.oltu.oauth2:org.apache.oltu.oauth2.authzserver:0.+'
+	optional "org.springframework.boot:spring-boot-configuration-processor"
+	api 'org.apache.commons:commons-lang3'
+
+	testCompile 'junit:junit:4.+'
+	testCompile "org.springframework.boot:spring-boot-starter-test"
+
+
+
+	/*api('org.springframework.cloud:spring-cloud-starter-zookeeper-discovery') {
+		exclude module: 'spring-cloud-starter-netflix-archaius'
+		exclude module: 'spring-cloud-starter-netflix-ribbon'
+		exclude module: 'spring-cloud-netflix-core'
+	}
+	api 'org.springframework.cloud:spring-cloud-starter-config'*/
+	api 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 }

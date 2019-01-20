@@ -1,0 +1,4 @@
+#org.springframework.boot.env.EnvironmentPostProcessor=cn.com.inhand.common.spring.ElementsEnvironmentPostProcessor
+#org.springframework.context.ApplicationListener=cn.com.inhand.common.spring.ElementsEnvironmentPostProcessor
+
+org.springframework.cloud.bootstrap.BootstrapConfiguration=com.smart.library.center.common.spring.MongoConfigBootstrapConfiguration

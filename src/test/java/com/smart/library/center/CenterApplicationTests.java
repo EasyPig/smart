@@ -1,3 +1,4 @@
+/*
 package com.smart.library.center;
 
 import org.junit.Test;
@@ -15,3 +16,4 @@ public class CenterApplicationTests {
 
 }
 
+*/
